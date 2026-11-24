@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#081a2c"><title>الموجز الأمني اليومي</title>
+<style>
+body{margin:0;background:#dfe5ec;font-family:'Segoe UI','Noto Sans Arabic',Tahoma,Arial,sans-serif;padding-bottom:84px}
+.bar{position:sticky;top:0;background:#081a2c;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;z-index:5;border-bottom:3px solid #c9a24d}
+.bar b{font-size:15px}.bar span{font-size:12px;color:#c9a24d}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #cbd3dc;display:flex;gap:10px;padding:10px 12px;z-index:6}
+.nav button{flex:1;border:0;border-radius:12px;padding:14px 6px;font:700 15px inherit;font-family:inherit;background:#081a2c;color:#fff}
+.nav button.alt{background:#f1e7cc;color:#081a2c}
+.nav button:disabled{opacity:.35}
+.pad{padding:10px 8px}
+#list .it{background:#fff;margin:8px 4px;padding:14px;border-radius:12px;display:flex;gap:12px;align-items:center;border-right:4px solid #c9a24d}
+#list .n{background:#081a2c;color:#c9a24d;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;flex:none}
+#list .t1{font-weight:700;color:#081a2c}#list .t2{font-size:12px;color:#6b7783;direction:ltr;text-align:left}
+.tabs{display:flex;margin:8px 4px;background:#fff;border-radius:12px;overflow:hidden}
+.tabs div{flex:1;text-align:center;padding:12px;font-weight:700;color:#6b7783}.tabs .on{background:#c9a24d;color:#081a2c}
+.cnt{text-align:center;color:#4a5663;font-size:13px;margin:6px}
+</style></head><body>
+<div class="bar"><b>الموجز الأمني اليومي · نسخة تجريبية</b><span id="cn"></span></div>
+<div class="tabs"><div id="t1" class="on">معاينة الرسالة</div><div id="t2">كل النصائح</div></div>
+<div class="cnt" id="cap"></div>
+<div id="view" class="pad"></div><div id="list" style="display:none"></div>
+<div class="nav"><button id="prev">السابق ›</button><button id="today" class="alt">نصيحة اليوم</button><button id="next">‹ التالي</button></div>
+<script>
+const TIPS=[
+{ar:{t:"فكّر قبل أن تضغط على الرابط",p:"أصبحت رسائل التصيّد الاحتيالي أكثر إتقانًا، وكثيرًا ما تبدو وكأنها صادرة من جهة موثوقة أو من أحد الزملاء. دقيقة واحدة من الحذر قد تحمي بيانات المؤسسة بالكامل.",l:["تحقق من عنوان المرسل الحقيقي قبل أي إجراء","مرّر المؤشر فوق الرابط لمعرفة وجهته","!لا تفتح مرفقًا غير متوقع أو طلبًا مستعجلًا"]},en:{t:"Think before you click",p:"Phishing emails are more polished than ever and often appear to come from a trusted source or a colleague. One minute of caution can protect the entire organization's data.",l:["Verify the real sender address before acting","Hover over a link to see where it really leads","!Don't open unexpected attachments or urgent requests"]}},
+{ar:{t:"كلمة مرور قوية لكل حساب",p:"إعادة استخدام كلمة المرور نفسها في أكثر من حساب تعني أن اختراق موقع واحد يفتح لك كل الأبواب. الجملة الطويلة أقوى وأسهل في التذكر من الرموز المعقدة.",l:["استخدم جملة طويلة من 14 حرفًا أو أكثر","اجعل لكل حساب كلمة مرور مختلفة","!لا تشارك كلمة المرور مع أحد حتى زملاء العمل"]},en:{t:"A strong, unique password for every account",p:"Reusing one password means a single breached site can open every door. A long passphrase is both stronger and easier to remember than complex symbols.",l:["Use a passphrase of 14 characters or more","Give every account its own password","!Never share your password, not even with colleagues"]}},
+{ar:{t:"فعّل التحقق بخطوتين",p:"حتى لو سُرقت كلمة مرورك، فإن التحقق بخطوتين يمنع المهاجم من الدخول إلى حسابك. إنه أسهل وأقوى حماية يمكنك إضافتها اليوم.",l:["فعّله على البريد الإلكتروني أولًا","استخدم تطبيق المصادقة بدل الرسائل النصية متى أمكن","!لا تعطِ رمز التحقق لأي شخص يتصل بك"]},en:{t:"Turn on two-step verification",p:"Even if your password is stolen, two-step verification keeps an attacker out of your account. It is the easiest and strongest protection you can add today.",l:["Enable it on your email account first","Prefer an authenticator app over text messages","!Never read out a verification code to a caller"]}},
+{ar:{t:"احذر من شبكات الواي فاي العامة",p:"الشبكات المفتوحة في المقاهي والمطارات قد تكون مراقبة أو مزيّفة. أي بيانات حساسة ترسلها عبرها قد تُعترض.",l:["استخدم بيانات هاتفك لأعمال المؤسسة الحساسة","استخدم شبكة افتراضية خاصة (VPN) المعتمدة","!لا تسجّل الدخول إلى أنظمة العمل عبر شبكة مجهولة"]},en:{t:"Be careful on public Wi-Fi",p:"Open networks in cafés and airports can be monitored or faked. Any sensitive data you send through them may be intercepted.",l:["Use mobile data for sensitive work","Use the approved company VPN","!Don't sign in to work systems on an unknown network"]}},
+{ar:{t:"لا توصّل أي USB مجهول",p:"أجهزة USB التي تجدها أو تُهدى إليك قد تحمل برمجيات خبيثة تعمل فور توصيلها. هذه حيلة قديمة وما زالت فعّالة.",l:["سلّم أي وحدة تخزين مجهولة لقسم تقنية المعلومات","استخدم الوحدات المعتمدة من المؤسسة فقط","!لا تجرّب فتح محتواها على جهاز العمل"]},en:{t:"Never plug in an unknown USB drive",p:"USB drives you find or receive as gifts can carry malware that runs the moment they are connected. It is an old trick that still works.",l:["Hand unknown drives to the IT department","Use only company-approved storage","!Don't try opening it on a work device"]}},
+{ar:{t:"حدّث أجهزتك أولًا بأول",p:"تحديثات النظام والتطبيقات تسدّ ثغرات يستغلها المهاجمون. تأجيلها يترك الباب مفتوحًا.",l:["فعّل التحديث التلقائي","أعد تشغيل الجهاز عند طلب النظام","!لا تتجاهل رسائل التحديث لأسابيع"]},en:{t:"Keep your devices updated",p:"System and app updates close the gaps attackers exploit. Postponing them leaves the door open.",l:["Turn on automatic updates","Restart when your system asks you to","!Don't ignore update prompts for weeks"]}},
+{ar:{t:"تحقق قبل تنفيذ أي طلب مالي",p:"من أشهر الاحتيالات رسالة تبدو من مدير أو مورّد تطلب تحويلًا عاجلًا أو تغيير بيانات حساب بنكي. السرعة هنا هي سلاح المحتال.",l:["اتصل بصاحب الطلب على رقمه المعروف","اتبع دائمًا إجراءات الاعتماد الرسمية","!لا تنفّذ تحويلًا بناءً على رسالة فقط"]},en:{t:"Verify every payment request",p:"A classic scam is a message that seems to come from an executive or supplier asking for an urgent transfer or a bank detail change. Urgency is the fraudster's weapon.",l:["Call the requester on a number you already know","Always follow the official approval process","!Never transfer money on the strength of a message alone"]}},
+{ar:{t:"احمِ شاشتك ومكتبك",p:"المعلومات المهمة قد تتسرب بنظرة عابرة أو ورقة متروكة. الأمن المادي جزء من أمن المعلومات.",l:["اقفل شاشتك عند مغادرة المكتب","أتلف الأوراق الحساسة بدل رميها","!لا تترك ملاحظات بكلمات المرور على المكتب"]},en:{t:"Protect your screen and desk",p:"Important information can leak through a passing glance or a forgotten sheet of paper. Physical security is part of information security.",l:["Lock your screen when you step away","Shred sensitive papers instead of binning them","!Don't leave passwords on sticky notes"]}},
+{ar:{t:"انتبه لما تشاركه عبر الإنترنت",p:"المعلومات التي تنشرها عن عملك وسفرك ومنصبك تساعد المهاجمين على صياغة رسائل مقنعة موجّهة إليك.",l:["راجع إعدادات الخصوصية في حساباتك","فكّر قبل نشر صور أماكن العمل أو الوثائق","!لا تعلن عن تفاصيل سفرك قبل حدوثه"]},en:{t:"Mind what you share online",p:"What you post about your work, travel and role helps attackers write convincing messages aimed at you.",l:["Review the privacy settings on your accounts","Think before posting workplace photos or documents","!Don't announce travel details in advance"]}},
+{ar:{t:"أبلغ فورًا عند الشك",p:"الإبلاغ السريع يحوّل حادثة محتملة إلى حالة تحت السيطرة. لا أحد سيلومك على بلاغ خاطئ، لكن التأخر قد يكلّف الكثير.",l:["أبلغ قسم تقنية المعلومات بمجرد الشك","احتفظ بالرسالة ولا تحذفها","!لا ترد على الرسالة المشبوهة"]},en:{t:"Report at the first sign of doubt",p:"Reporting quickly turns a potential incident into a contained one. No one will blame you for a false alarm, but delay can be costly.",l:["Tell the IT department as soon as you suspect","Keep the message, don't delete it","!Don't reply to the suspicious message"]}}
+];
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function emailHTML(tip,n,dateStr,sender){
+ var F="font-family:'Segoe UI',Tahoma,Arial,sans-serif;";
+ var S="font-family:Georgia,'Times New Roman',serif;";
+ function rows(list,dir){return list.map(function(x){var no=x.charAt(0)==='!';var t=no?x.slice(1):x;
+  var mark=no?'<span style="color:#c0392b;font-weight:bold;">&#10005;</span>':'<span style="color:#1f8a5b;font-weight:bold;">&#10003;</span>';
+  var al=dir==='rtl'?'right':'left';
+  return '<tr><td dir="'+dir+'" align="'+al+'" style="'+F+'font-size:14px;line-height:24px;color:#2a3440;padding:5px 0;">'+mark+'&nbsp;&nbsp;'+esc(t)+'</td></tr>'}).join('')}
+ function block(l,dir,tag,num){var al=dir==='rtl'?'right':'left';
+  return '<tr><td dir="'+dir+'" align="'+al+'" style="padding:30px 32px 8px 32px;">'
+  +'<table role="presentation" cellpadding="0" cellspacing="0" border="0" dir="'+dir+'"><tr><td width="32" height="32" align="center" bgcolor="#081a2c" style="border-radius:16px;color:#c9a24d;'+F+'font-weight:bold;font-size:14px;">'+num+'</td><td style="padding:0 10px;'+F+'font-size:11px;letter-spacing:'+(dir==='rtl'?'0':'3px')+';color:#a8822f;font-weight:bold;">'+tag+'</td></tr></table>'
+  +'<div style="'+(dir==='rtl'?F+'font-size:22px;':S+'font-size:21px;')+'line-height:1.5;color:#081a2c;font-weight:bold;padding:12px 0 8px 0;">'+esc(l.t)+'</div>'
+  +'<div style="'+F+'font-size:'+(dir==='rtl'?'15px':'14px')+';line-height:1.9;color:#3a4654;padding-bottom:16px;">'+esc(l.p)+'</div>'
+  +'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f3ea" style="border-radius:10px;"><tr><td style="padding:12px 20px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'+rows(l.l,dir)+'</table></td></tr></table>'
+  +'</td></tr>'}
+ return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e9edf2"><tr><td align="center" style="padding:0;">'
+ +'<table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:100%;max-width:620px;">'
+ +'<tr><td align="center" bgcolor="#081a2c" style="padding:38px 24px 32px 24px;border-bottom:4px solid #c9a24d;">'
+ +'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td width="58" height="58" align="center" style="border:2px solid #c9a24d;border-radius:30px;color:#c9a24d;font-size:24px;'+F+'">&#9670;</td></tr></table>'
+ +'<div style="'+F+'font-size:11px;letter-spacing:4px;color:#c9a24d;font-weight:bold;padding-top:16px;">DAILY SECURITY BRIEF</div>'
+ +'<div style="'+F+'font-size:30px;color:#ffffff;font-weight:bold;padding:10px 0 4px 0;">الموجز الأمني اليومي</div>'
+ +'<div style="'+F+'font-size:15px;color:#b9c8d6;letter-spacing:1px;">Your Daily Security Brief</div>'
+ +'<div style="'+F+'font-size:12px;color:#b9c8d6;letter-spacing:1px;padding-top:18px;">'+esc(dateStr)+'</div></td></tr>'
+ +block(tip.ar,'rtl','نصيحة اليوم',n)
+ +'<tr><td align="center" style="color:#c9a24d;font-size:14px;letter-spacing:8px;padding:22px 34px 0 34px;border-top:0;">&#9670; &#9670; &#9670;</td></tr>'
+ +block(tip.en,'ltr','TIP OF THE DAY',n)
+ +'<tr><td style="padding:22px 32px 30px 32px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#081a2c" style="border-radius:10px;"><tr><td align="center" style="padding:18px 20px;'+F+'font-size:14px;line-height:1.8;color:#ffffff;"><b style="color:#c9a24d;">هل لديك شك؟ أبلغ قسم تقنية المعلومات ولا ترد على الرسالة</b><br>Suspicious? Report it to IT and do not reply.</td></tr></table></td></tr>'
+ +'<tr><td align="center" bgcolor="#f3f5f8" style="padding:22px 30px;'+F+'font-size:12px;line-height:1.8;color:#7b8794;"><b style="color:#081a2c;font-size:13px;">'+esc(sender)+'</b><br>رسالة توعوية تلقائية، يرجى عدم الرد<br>Automated awareness message. Please do not reply.</td></tr>'
+ +'</table></td></tr></table>'}
+
+var i=0,mode=1;
+var d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);
+function ds(){return d.getDate()+' · '+(d.getMonth()+1)+' · '+d.getFullYear()}
+function show(){document.getElementById('view').innerHTML=emailHTML(TIPS[i],i+1,ds(),'قسم تقنية المعلومات · IT Department');
+ document.getElementById('cap').textContent='نصيحة '+(i+1)+' من '+TIPS.length+(i===doy%TIPS.length?' · نصيحة اليوم':'');
+ document.getElementById('cn').textContent=(i+1)+'/'+TIPS.length}
+function setMode(m){mode=m;document.getElementById('view').style.display=m==1?'':'none';document.getElementById('list').style.display=m==2?'':'none';document.getElementById('cap').style.display=m==1?'':'none';
+ document.getElementById('t1').className=m==1?'on':'';document.getElementById('t2').className=m==2?'on':'';
+ document.querySelector('.nav').style.display=m==1?'flex':'none'}
+document.getElementById('prev').onclick=function(){i=(i-1+TIPS.length)%TIPS.length;show();scrollTo(0,0)};
+document.getElementById('next').onclick=function(){i=(i+1)%TIPS.length;show();scrollTo(0,0)};
+document.getElementById('today').onclick=function(){i=doy%TIPS.length;show();scrollTo(0,0)};
+document.getElementById('t1').onclick=function(){setMode(1)};document.getElementById('t2').onclick=function(){setMode(2)};
+document.getElementById('list').innerHTML=TIPS.map(function(t,k){return '<div class="it" data-k="'+k+'"><div class="n">'+(k+1)+'</div><div><div class="t1">'+t.ar.t+'</div><div class="t2">'+t.en.t+'</div></div></div>'}).join('');
+Array.prototype.forEach.call(document.querySelectorAll('.it'),function(e){e.onclick=function(){i=+e.dataset.k;show();setMode(1);scrollTo(0,0)}});
+i=doy%TIPS.length;show();setMode(1);
+</script></body></html>
