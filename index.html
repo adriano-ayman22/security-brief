@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#081a2c"><title>الموجز الأمني اليومي</title>
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#081a2c"><title>نشرة أمنية</title>
 <style>
 body{margin:0;background:#dfe5ec;font-family:'Segoe UI','Noto Sans Arabic',Tahoma,Arial,sans-serif;padding-bottom:84px}
 .bar{position:sticky;top:0;background:#081a2c;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;z-index:5;border-bottom:3px solid #c9a24d}
@@ -13,12 +13,27 @@ body{margin:0;background:#dfe5ec;font-family:'Segoe UI','Noto Sans Arabic',Tahom
 #list .t1{font-weight:700;color:#081a2c}#list .t2{font-size:12px;color:#6b7783;direction:ltr;text-align:left}
 .tabs{display:flex;margin:8px 4px;background:#fff;border-radius:12px;overflow:hidden}
 .tabs div{flex:1;text-align:center;padding:12px;font-weight:700;color:#6b7783}.tabs .on{background:#c9a24d;color:#081a2c}
+.form{background:#fff;margin:4px;padding:14px;border-radius:12px}.form h3{margin:0 0 6px;color:#081a2c}
+.form label{display:block;font-size:13px;color:#4a5663;margin:12px 0 4px;font-weight:700}
+.form input,.form textarea{width:100%;box-sizing:border-box;border:1px solid #c9d3dc;border-radius:10px;padding:11px;font:16px inherit;font-family:inherit;background:#fafbfc}
+.btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.btns button{flex:1;min-width:110px;border:0;border-radius:12px;padding:13px 6px;font:700 14px inherit;font-family:inherit;background:#081a2c;color:#fff}.btns .alt{background:#f1e7cc;color:#081a2c}
 .cnt{text-align:center;color:#4a5663;font-size:13px;margin:6px}
 </style></head><body>
-<div class="bar"><b>الموجز الأمني اليومي · نسخة تجريبية</b><span id="cn"></span></div>
-<div class="tabs"><div id="t1" class="on">معاينة الرسالة</div><div id="t2">كل النصائح</div></div>
+<div class="bar"><b>نشرة أمنية · نسخة تجريبية</b><span id="cn"></span></div>
+<div class="tabs"><div id="t1" class="on">المعاينة</div><div id="t2">كل النصائح</div><div id="t3">اكتب نشرة</div></div>
 <div class="cnt" id="cap"></div>
-<div id="view" class="pad"></div><div id="list" style="display:none"></div>
+<div id="view" class="pad"></div>
+<div id="compose" style="display:none" class="pad"><div class="form">
+<h3>اكتب نشرتك بنفسك</h3>
+<label>العنوان (عربي)</label><input id="at">
+<label>النص (عربي)</label><textarea id="ap" rows="5"></textarea>
+<label>نقاط (كل نقطة في سطر · ابدأ السطر بعلامة ! لو "ممنوع")</label><textarea id="al" rows="4"></textarea>
+<div class="btns"><button id="tr">ترجم للإنجليزي تلقائيًا</button></div><div id="trm" class="cnt"></div><label>Title (English, editable)</label><input id="et" dir="ltr">
+<label>Body (English, optional)</label><textarea id="ep" rows="4" dir="ltr"></textarea>
+<label>Points (English, one per line, start with ! for a "don't")</label><textarea id="el" rows="3" dir="ltr"></textarea>
+<label>اسم المرسل</label><input id="sn" value="إدارة الأمن · Security Department">
+<div class="btns"><button id="b1">عرض المعاينة</button><button id="b2" class="alt">نسخ كود الإيميل</button><button id="b3" class="alt">تحميل ملف HTML</button></div>
+<div id="msg" class="cnt"></div></div><div id="cprev"></div></div><div id="list" style="display:none"></div>
 <div class="nav"><button id="prev">السابق ›</button><button id="today" class="alt">نصيحة اليوم</button><button id="next">‹ التالي</button></div>
 <script>
 const TIPS=[
@@ -42,25 +57,25 @@ function emailHTML(tip,n,dateStr,sender){
   var mark=no?'<span style="color:#c0392b;font-weight:bold;">&#10005;</span>':'<span style="color:#1f8a5b;font-weight:bold;">&#10003;</span>';
   var al=dir==='rtl'?'right':'left';
   return '<tr><td dir="'+dir+'" align="'+al+'" style="'+F+'font-size:14px;line-height:24px;color:#2a3440;padding:5px 0;">'+mark+'&nbsp;&nbsp;'+esc(t)+'</td></tr>'}).join('')}
- function block(l,dir,tag,num){var al=dir==='rtl'?'right':'left';
+ function block(l,dir,tag,num){num=(num===null)?'&#9670;':num;var al=dir==='rtl'?'right':'left';
   return '<tr><td dir="'+dir+'" align="'+al+'" style="padding:30px 32px 8px 32px;">'
   +'<table role="presentation" cellpadding="0" cellspacing="0" border="0" dir="'+dir+'"><tr><td width="32" height="32" align="center" bgcolor="#081a2c" style="border-radius:16px;color:#c9a24d;'+F+'font-weight:bold;font-size:14px;">'+num+'</td><td style="padding:0 10px;'+F+'font-size:11px;letter-spacing:'+(dir==='rtl'?'0':'3px')+';color:#a8822f;font-weight:bold;">'+tag+'</td></tr></table>'
   +'<div style="'+(dir==='rtl'?F+'font-size:22px;':S+'font-size:21px;')+'line-height:1.5;color:#081a2c;font-weight:bold;padding:12px 0 8px 0;">'+esc(l.t)+'</div>'
-  +'<div style="'+F+'font-size:'+(dir==='rtl'?'15px':'14px')+';line-height:1.9;color:#3a4654;padding-bottom:16px;">'+esc(l.p)+'</div>'
-  +'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f3ea" style="border-radius:10px;"><tr><td style="padding:12px 20px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'+rows(l.l,dir)+'</table></td></tr></table>'
+  +(l.p?'<div style="'+F+'font-size:'+(dir==='rtl'?'15px':'14px')+';line-height:1.9;color:#3a4654;padding-bottom:16px;white-space:pre-line;">'+esc(l.p)+'</div>':'')
+  +(l.l.length?'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f3ea" style="border-radius:10px;"><tr><td style="padding:12px 20px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">'+rows(l.l,dir)+'</table></td></tr></table>':'')
   +'</td></tr>'}
  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e9edf2"><tr><td align="center" style="padding:0;">'
  +'<table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:100%;max-width:620px;">'
  +'<tr><td align="center" bgcolor="#081a2c" style="padding:38px 24px 32px 24px;border-bottom:4px solid #c9a24d;">'
  +'<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td width="58" height="58" align="center" style="border:2px solid #c9a24d;border-radius:30px;color:#c9a24d;font-size:24px;'+F+'">&#9670;</td></tr></table>'
- +'<div style="'+F+'font-size:11px;letter-spacing:4px;color:#c9a24d;font-weight:bold;padding-top:16px;">DAILY SECURITY BRIEF</div>'
- +'<div style="'+F+'font-size:30px;color:#ffffff;font-weight:bold;padding:10px 0 4px 0;">الموجز الأمني اليومي</div>'
- +'<div style="'+F+'font-size:15px;color:#b9c8d6;letter-spacing:1px;">Your Daily Security Brief</div>'
+ +'<div style="'+F+'font-size:11px;letter-spacing:4px;color:#c9a24d;font-weight:bold;padding-top:16px;">SECURITY BULLETIN</div>'
+ +'<div style="'+F+'font-size:30px;color:#ffffff;font-weight:bold;padding:10px 0 4px 0;">نشرة أمنية</div>'
+ +'<div style="'+F+'font-size:15px;color:#b9c8d6;letter-spacing:1px;">Security Bulletin</div>'
  +'<div style="'+F+'font-size:12px;color:#b9c8d6;letter-spacing:1px;padding-top:18px;">'+esc(dateStr)+'</div></td></tr>'
- +block(tip.ar,'rtl','نصيحة اليوم',n)
- +'<tr><td align="center" style="color:#c9a24d;font-size:14px;letter-spacing:8px;padding:22px 34px 0 34px;border-top:0;">&#9670; &#9670; &#9670;</td></tr>'
- +block(tip.en,'ltr','TIP OF THE DAY',n)
- +'<tr><td style="padding:22px 32px 30px 32px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#081a2c" style="border-radius:10px;"><tr><td align="center" style="padding:18px 20px;'+F+'font-size:14px;line-height:1.8;color:#ffffff;"><b style="color:#c9a24d;">هل لديك شك؟ أبلغ إدارة الأمن فورًا</b><br>Suspicious? Report it to the Security Department right away.</td></tr></table></td></tr>'
+ +block(tip.ar,'rtl',tip.custom?'نشرة':'نصيحة اليوم',tip.custom?null:n)
+ +(tip.en?('<tr><td align="center" style="color:#c9a24d;font-size:14px;letter-spacing:8px;padding:22px 34px 0 34px;border-top:0;">&#9670; &#9670; &#9670;</td></tr>'
+ +block(tip.en,'ltr',tip.custom?'BULLETIN':'TIP OF THE DAY',tip.custom?null:n)):'')
+ +'<tr><td style="padding:22px 32px 30px 32px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#081a2c" style="border-radius:10px;"><tr><td align="center" style="padding:18px 20px;'+F+'font-size:14px;line-height:1.8;color:#ffffff;"><b style="color:#c9a24d;">هل لديك شك؟ أبلغ إدارة الأمن فورًا</b>'+(tip.en||!tip.custom?'<br>Suspicious? Report it to the Security Department right away.':'')+'</td></tr></table></td></tr>'
  +'<tr><td align="center" bgcolor="#f3f5f8" style="padding:22px 30px;'+F+'font-size:12px;line-height:1.8;color:#7b8794;"><b style="color:#081a2c;font-size:13px;">'+esc(sender)+'</b><br>رسالة توعوية تلقائية، يرجى عدم الرد<br>Automated awareness message. Please do not reply.</td></tr>'
  +'</table></td></tr></table>'}
 
@@ -70,9 +85,31 @@ function ds(){return d.getDate()+' · '+(d.getMonth()+1)+' · '+d.getFullYear()}
 function show(){document.getElementById('view').innerHTML=emailHTML(TIPS[i],i+1,ds(),'إدارة الأمن · Security Department');
  document.getElementById('cap').textContent='نصيحة '+(i+1)+' من '+TIPS.length+(i===doy%TIPS.length?' · نصيحة اليوم':'');
  document.getElementById('cn').textContent=(i+1)+'/'+TIPS.length}
-function setMode(m){mode=m;document.getElementById('view').style.display=m==1?'':'none';document.getElementById('list').style.display=m==2?'':'none';document.getElementById('cap').style.display=m==1?'':'none';
+function lines(s){return s.split('\n').map(function(x){return x.trim()}).filter(Boolean)}
+function custom(){var g=function(i){return document.getElementById(i).value};var o={custom:1,ar:{t:g('at')||'عنوان النشرة',p:g('ap'),l:lines(g('al'))}};
+ if(g('et')||g('ep')||g('el'))o.en={t:g('et'),p:g('ep'),l:lines(g('el'))};return o}
+function cshow(){document.getElementById('cprev').innerHTML=emailHTML(custom(),0,ds(),document.getElementById('sn').value);try{localStorage.setItem('bul',JSON.stringify(['at','ap','al','et','ep','el','sn'].map(function(i){return document.getElementById(i).value})))}catch(e){}}
+function full(){return '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0">'+emailHTML(custom(),0,ds(),document.getElementById('sn').value)+'</body></html>'}
+function note(t){document.getElementById('msg').textContent=t}
+document.getElementById('b1').onclick=function(){cshow();note("تم تحديث المعاينة تحت");document.getElementById("cprev").scrollIntoView()};
+document.getElementById('b2').onclick=function(){var h=full();if(navigator.clipboard){navigator.clipboard.writeText(h).then(function(){note('تم نسخ كود الإيميل')},function(){note('النسخ مش متاح، استخدم التحميل')})}else note('النسخ مش متاح، استخدم التحميل')};
+document.getElementById('b3').onclick=function(){var b=new Blob([full()],{type:'text/html'}),u=URL.createObjectURL(b),x=document.createElement('a');x.href=u;x.download='nashra-amniya.html';document.body.appendChild(x);x.click();x.remove();note('تم تحميل الملف')};
+try{var sv=JSON.parse(localStorage.getItem('bul')||'null');if(sv)['at','ap','al','et','ep','el','sn'].forEach(function(k,n){document.getElementById(k).value=sv[n]})}catch(e){}
+var dirty={},tmr;
+function mm(q){return fetch('https://api.mymemory.translated.net/get?langpair=ar|en&q='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){if(j.responseStatus!=200||/MYMEMORY|QUERY LENGTH/i.test(j.responseData.translatedText))throw 0;return j.responseData.translatedText}).catch(function(){return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){return j[0].map(function(x){return x[0]}).join('')})})}
+function tx(s){s=s.trim();if(!s)return Promise.resolve('');var parts=s.match(/[^.!؟?\n]+[.!؟?]*/g)||[s];var ch=[],c='';parts.forEach(function(p){if((c+p).length>400){ch.push(c);c=p}else c+=p});if(c)ch.push(c);return Promise.all(ch.map(function(x){return mm(x.trim())})).then(function(r){return r.join(' ')})}
+function txLines(s){return Promise.all(s.split('\n').map(function(l){l=l.trim();if(!l)return '';var no=l.charAt(0)=='!';return tx(no?l.slice(1):l).then(function(e){return (no?'!':'')+e})})).then(function(r){return r.filter(Boolean).join('\n')})}
+function autoTr(force){var g=function(i){return document.getElementById(i).value},t=document.getElementById('trm');
+ var jobs=[['at','et',tx],['ap','ep',tx],['al','el',txLines]].filter(function(j){return g(j[0]).trim()&&(force||!dirty[j[1]])});
+ if(!jobs.length){return}t.textContent='جاري الترجمة...';
+ Promise.all(jobs.map(function(j){return j[2](g(j[0])).then(function(e){document.getElementById(j[1]).value=e;dirty[j[1]]=false})})).then(function(){t.textContent='تمت الترجمة تلقائيًا. راجعها وعدّل أي كلمة في الخانات الإنجليزية';cshow()},function(){t.textContent='الترجمة مش متاحة دلوقتي، اكتب الإنجليزي بنفسك'})}
+['at','ap','al'].forEach(function(i){document.getElementById(i).addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(function(){autoTr(false)},1600)})});
+['et','ep','el'].forEach(function(i){document.getElementById(i).addEventListener('input',function(){dirty[i]=true})});
+document.getElementById('tr').onclick=function(){autoTr(true)};
+function setMode(m){document.getElementById('compose').style.display=m==3?'':'none';document.getElementById('t3').className=m==3?'on':'';if(m==3)cshow();mode=m;document.getElementById('view').style.display=m==1?'':'none';document.getElementById('list').style.display=m==2?'':'none';document.getElementById('cap').style.display=m==1?'':'none';
  document.getElementById('t1').className=m==1?'on':'';document.getElementById('t2').className=m==2?'on':'';
  document.querySelector('.nav').style.display=m==1?'flex':'none'}
+document.getElementById('t3').onclick=function(){setMode(3)};
 document.getElementById('prev').onclick=function(){i=(i-1+TIPS.length)%TIPS.length;show();scrollTo(0,0)};
 document.getElementById('next').onclick=function(){i=(i+1)%TIPS.length;show();scrollTo(0,0)};
 document.getElementById('today').onclick=function(){i=doy%TIPS.length;show();scrollTo(0,0)};
