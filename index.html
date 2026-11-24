@@ -17,6 +17,7 @@ body{margin:0;background:#dfe5ec;font-family:'Segoe UI','Noto Sans Arabic',Tahom
 .form label{display:block;font-size:13px;color:#4a5663;margin:12px 0 4px;font-weight:700}
 .form input,.form textarea{width:100%;box-sizing:border-box;border:1px solid #c9d3dc;border-radius:10px;padding:11px;font:16px inherit;font-family:inherit;background:#fafbfc}
 .btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.btns button{flex:1;min-width:110px;border:0;border-radius:12px;padding:13px 6px;font:700 14px inherit;font-family:inherit;background:#081a2c;color:#fff}.btns .alt{background:#f1e7cc;color:#081a2c}
+.credit{text-align:center;color:#6b7783;font-size:13px;line-height:1.8;padding:18px 10px 6px}.credit br+span{display:inline-block}
 .cnt{text-align:center;color:#4a5663;font-size:13px;margin:6px}
 </style></head><body>
 <div class="bar"><b>نشرة أمنية · نسخة تجريبية</b><span id="cn"></span></div>
@@ -34,6 +35,7 @@ body{margin:0;background:#dfe5ec;font-family:'Segoe UI','Noto Sans Arabic',Tahom
 <label>اسم المرسل</label><input id="sn" value="إدارة الأمن · Security Department">
 <div class="btns"><button id="b1">عرض المعاينة</button><button id="b2" class="alt">نسخ كود الإيميل</button><button id="b3" class="alt">تحميل ملف HTML</button></div>
 <div id="msg" class="cnt"></div></div><div id="cprev"></div></div><div id="list" style="display:none"></div>
+<div class="credit">تصميم وتطوير: قدري أيمن<br><span dir="ltr">Designed &amp; Developed by Kadry Ayman</span></div>
 <div class="nav"><button id="prev">السابق ›</button><button id="today" class="alt">نصيحة اليوم</button><button id="next">‹ التالي</button></div>
 <script>
 const TIPS=[
@@ -76,7 +78,7 @@ function emailHTML(tip,n,dateStr,sender){
  +(tip.en?('<tr><td align="center" style="color:#c9a24d;font-size:14px;letter-spacing:8px;padding:22px 34px 0 34px;border-top:0;">&#9670; &#9670; &#9670;</td></tr>'
  +block(tip.en,'ltr',tip.custom?'BULLETIN':'TIP OF THE DAY',tip.custom?null:n)):'')
  +'<tr><td style="padding:22px 32px 30px 32px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#081a2c" style="border-radius:10px;"><tr><td align="center" style="padding:18px 20px;'+F+'font-size:14px;line-height:1.8;color:#ffffff;"><b style="color:#c9a24d;">هل لديك شك؟ أبلغ إدارة الأمن فورًا</b>'+(tip.en||!tip.custom?'<br>Suspicious? Report it to the Security Department right away.':'')+'</td></tr></table></td></tr>'
- +'<tr><td align="center" bgcolor="#f3f5f8" style="padding:22px 30px;'+F+'font-size:12px;line-height:1.8;color:#7b8794;"><b style="color:#081a2c;font-size:13px;">'+esc(sender)+'</b><br>رسالة توعوية تلقائية، يرجى عدم الرد<br>Automated awareness message. Please do not reply.</td></tr>'
+ +'<tr><td align="center" bgcolor="#f3f5f8" style="padding:22px 30px;'+F+'font-size:12px;line-height:1.8;color:#7b8794;"><b style="color:#081a2c;font-size:13px;">'+esc(sender)+'</b><br>رسالة توعوية تلقائية، يرجى عدم الرد<br>Automated awareness message. Please do not reply.<br><span style="color:#a8822f;">تصميم وتطوير: قدري أيمن &nbsp;·&nbsp; Designed &amp; Developed by Kadry Ayman</span></td></tr>'
  +'</table></td></tr></table>'}
 
 var i=0,mode=1;
