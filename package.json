@@ -1,0 +1,16 @@
+{
+  "name": "security-bulletin-hamra",
+  "version": "1.0.0",
+  "description": "Security bulletin",
+  "author": "Kadry Ayman",
+  "main": "main.js",
+  "devDependencies": { "electron": "^31.0.0", "electron-builder": "^24.13.3" },
+  "build": {
+    "appId": "com.kadry.security",
+    "productName": "SecurityBulletin",
+    "files": ["main.js", "1-app.html", "build/1-icon.png"],
+    "directories": { "buildResources": "build" },
+    "win": { "target": ["portable"], "icon": "build/1-icon.png" },
+    "portable": { "artifactName": "Security-Bulletin-Portable.exe" }
+  }
+}
