@@ -44,7 +44,7 @@ body{margin:0;background:#dfe5ec;font-family:'Segoe UI','Noto Sans Arabic',Tahom
 <label>العنوان (عربي)</label><input id="at">
 <label>النص (عربي)</label><textarea id="ap" rows="5"></textarea>
 <label>نقاط (كل نقطة في سطر · ابدأ السطر بعلامة ! لو "ممنوع")</label><textarea id="al" rows="4"></textarea>
-<div class="btns"><button id="tr">ترجم للإنجليزي تلقائيًا</button></div><div id="trm" class="cnt"></div><label>Title (English, editable)</label><input id="et" dir="ltr">
+<div class="cnt" style="color:#6b7783">اكتب العربي والإنجليزي بنفسك. مفيش ترجمة تلقائية ومفيش أي نص بيتبعت لأي موقع.</div><label>Title (English, editable)</label><input id="et" dir="ltr">
 <label>Body (English, optional)</label><textarea id="ep" rows="4" dir="ltr"></textarea>
 <label>Points (English, one per line, start with ! for a "don't")</label><textarea id="el" rows="3" dir="ltr"></textarea>
 <label>اسم المرسل</label><input id="sn" value="إدارة الأمن · Security Department">
@@ -114,16 +114,6 @@ document.getElementById('b2').onclick=function(){var h=full();if(navigator.clipb
 document.getElementById('b3').onclick=function(){var b=new Blob([full()],{type:'text/html'}),u=URL.createObjectURL(b),x=document.createElement('a');x.href=u;x.download='nashra-amniya.html';document.body.appendChild(x);x.click();x.remove();note('تم تحميل الملف')};
 try{var sv=JSON.parse(localStorage.getItem('bul')||'null');if(sv)['at','ap','al','et','ep','el','sn'].forEach(function(k,n){document.getElementById(k).value=sv[n]})}catch(e){}
 var dirty={},tmr;
-function mm(q){return fetch('https://api.mymemory.translated.net/get?langpair=ar|en&q='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){if(j.responseStatus!=200||/MYMEMORY|QUERY LENGTH/i.test(j.responseData.translatedText))throw 0;return j.responseData.translatedText}).catch(function(){return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){return j[0].map(function(x){return x[0]}).join('')})})}
-function tx(s){s=s.trim();if(!s)return Promise.resolve('');var parts=s.match(/[^.!؟?\n]+[.!؟?]*/g)||[s];var ch=[],c='';parts.forEach(function(p){if((c+p).length>400){ch.push(c);c=p}else c+=p});if(c)ch.push(c);return Promise.all(ch.map(function(x){return mm(x.trim())})).then(function(r){return r.join(' ')})}
-function txLines(s){return Promise.all(s.split('\n').map(function(l){l=l.trim();if(!l)return '';var no=l.charAt(0)=='!';return tx(no?l.slice(1):l).then(function(e){return (no?'!':'')+e})})).then(function(r){return r.filter(Boolean).join('\n')})}
-function autoTr(force){var g=function(i){return document.getElementById(i).value},t=document.getElementById('trm');
- var jobs=[['at','et',tx],['ap','ep',tx],['al','el',txLines]].filter(function(j){return g(j[0]).trim()&&(force||!dirty[j[1]])});
- if(!jobs.length){return}t.textContent='جاري الترجمة...';
- Promise.all(jobs.map(function(j){return j[2](g(j[0])).then(function(e){document.getElementById(j[1]).value=e;dirty[j[1]]=false})})).then(function(){t.textContent='تمت الترجمة تلقائيًا. راجعها وعدّل أي كلمة في الخانات الإنجليزية';cshow()},function(){t.textContent='الترجمة مش متاحة دلوقتي، اكتب الإنجليزي بنفسك'})}
-['at','ap','al'].forEach(function(i){document.getElementById(i).addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(function(){autoTr(false)},1600)})});
-['et','ep','el'].forEach(function(i){document.getElementById(i).addEventListener('input',function(){dirty[i]=true})});
-document.getElementById('tr').onclick=function(){autoTr(true)};
 function setMode(m){document.getElementById('compose').style.display=m==3?'':'none';document.getElementById('t3').className=m==3?'on':'';if(m==3)cshow();mode=m;document.getElementById('view').style.display=m==1?'':'none';document.getElementById('list').style.display=m==2?'':'none';document.getElementById('cap').style.display=m==1?'':'none';
  document.getElementById('t1').className=m==1?'on':'';document.getElementById('t2').className=m==2?'on':'';
  document.querySelector('.nav').style.display=m==1?'flex':'none'}
