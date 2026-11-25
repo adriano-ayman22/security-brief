@@ -22,3 +22,4 @@ jobs:
           name: Windows build ${{ github.run_number }}
           files: |
             dist/Security-Bulletin-Portable.exe
+# v1.1 repackage fixed source
